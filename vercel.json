@@ -1,0 +1,26 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "requirements.txt",
+        "use": "@vercel/python",
+        "config": {
+          "runtime": "python3.10"
+        }
+      },
+      {
+        "src": "main.py",
+        "use": "@vercel/python",
+        "config": {
+          "runtime": "python3.10"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/main.py"
+      }
+    ]
+  }
+  
