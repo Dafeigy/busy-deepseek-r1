@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+import encodings.utf_8 as utf_8
 import time
 import asyncio
 import json
@@ -7,13 +8,53 @@ app = FastAPI()
 
 
 async def stream_generator(model,contents):
-    response_text = ['"data":{"id":"fakeLLM","object":"chat.completion.chunk","created":1145141919810,"model":f"{model}","choices":[{"index":0,"delta":{"content":"","reasoning_content":None,"role":"assistant"},"finish_reason":None,"content_filter_results":{"hate":{"filtered":False},"self_harm":{"filtered":False},"sexual":{"filtered":False},"violence":{"filtered":False}}}],"system_fingerprint":"","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}}']
-    response_text += ['"data":{"id":"fakeLLM","object":"chat.completion.chunk","created":1145141919810,"model":f"{model}","choices":[{"index":0,"delta":{"content":f"{content}","reasoning_content":None},"finish_reason":None,"content_filter_results":{"hate":{"filtered":False},"self_harm":{"filtered":False},"sexual":{"filtered":False},"violence":{"filtered":False}}}],"system_fingerprint":"","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}}' for content in contents]
-    response_text.append('"data":{"id":"fakeLLM","object":"chat.completion.chunk","created":1145141919810,"model":f"{model}","choices":[{"index":0,"delta":{"content":"","reasoning_content":None},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":False},"self_harm":{"filtered":False},"sexual":{"filtered":False},"violence":{"filtered":False}}}],"system_fingerprint":"","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}}')
-    response_text.append('"data":"[DONE]"')
-    for each in response_text:
-        yield json.dumps(str(each)) + "\n\n"
-        await asyncio.sleep(0.2)
+    role_message = {
+        "id": "fakeLLM",
+        "object": "chat.completion.chunk",
+        "created": int(time.time()),
+        "model": model,
+        "choices": [{
+            "index": 0,
+            "delta": {
+                "role": "assistant",
+            },
+            "finish_reason": None
+        }]
+    }
+    
+    yield f"data: {json.dumps(role_message)}\n\n"
+    
+    for char in contents:
+        content_message = {
+            "id": "fakeLLM",
+            "object": "chat.completion.chunk",
+            "created": int(time.time()),
+            "model": model,
+            "choices": [{
+                "index": 0,
+                "delta": {
+                    "content": char
+                },
+                "finish_reason": None
+            }]
+        }
+        yield f"data: {json.dumps(content_message,ensure_ascii=False)}\n\n"
+        await asyncio.sleep(0.1)  # 添加一个小延迟使输出更自然
+    
+    done_message = {
+        "id": "fakeLLM",
+        "object": "chat.completion.chunk",
+        "created": int(time.time()),
+        "model": model,
+        "choices": [{
+            "index": 0,
+            "delta": {},
+            "finish_reason": "stop"
+        }]
+    }
+    yield f"data: {json.dumps(done_message)}\n\n"
+    yield 'data: [DONE]\n\n'
+
 
 
 @app.post("/v1/chat/completions")

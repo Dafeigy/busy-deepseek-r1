@@ -40,5 +40,5 @@ headers = {
 
 with requests.post(url, stream=True, json=payload, headers=headers) as r:
     for line in r.iter_lines():
-        # print(json.loads(line.decode('utf-8')))
-        print(line.decode('utf-8'))
+        # print(json.loads(line.decode('gbk')))
+        print(line.decode())
