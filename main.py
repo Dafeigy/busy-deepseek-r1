@@ -11,7 +11,7 @@ async def stream_generator(model,contents):
     response_text.append({"id":"fakeLLM","object":"chat.completion.chunk","created":1145141919810,"model":f"{model}","choices":[{"index":0,"delta":{"content":"","reasoning_content":None},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":False},"self_harm":{"filtered":False},"sexual":{"filtered":False},"violence":{"filtered":False}}}],"system_fingerprint":"","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}})
     response_text.append("[DONE]")
     for each in response_text:
-        yield str(each) + '\n'
+        yield str(each) + '\n\n'
         time.sleep(0.2)
 
 
