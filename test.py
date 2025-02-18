@@ -36,6 +36,6 @@ headers = {
     "Content-Type": "application/json"
 }
 
-response = requests.request("GET", url, json=payload, headers=headers)
+response = requests.request("POST", url, json=payload, headers=headers)
 
 print(response.text)
