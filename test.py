@@ -1,5 +1,5 @@
 import requests # type: ignore
-
+import json
 url = "http://127.0.0.1:8000/v1/chat/completions"
 
 payload = {
@@ -40,4 +40,5 @@ headers = {
 
 with requests.post(url, stream=True, json=payload, headers=headers) as r:
     for line in r.iter_lines():
-        print(line)
+        # print(json.loads(line.decode('utf-8')))
+        print(line.decode('utf-8'))
