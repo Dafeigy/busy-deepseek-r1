@@ -21,15 +21,12 @@ async def read_root(request: Request):
     contents = "服务器繁忙，请稍后再试。"
     is_stream = data['stream']
     model = data['model']
-    headers = {'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'}
 
     if is_stream:
         print("Streaming")
         return StreamingResponse(stream_generator(model,contents), 
                                  media_type="text/event-stream",
-                                 headers=headers)
+                                 )
     else:
         return  {
         "id": f"{int(time.time())}",
