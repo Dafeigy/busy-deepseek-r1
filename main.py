@@ -12,7 +12,7 @@ async def stream_generator(model,contents):
     response_text.append("[DONE]")
     for each in response_text:
         yield str(each) + '\n\n'
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.2)
 
 
 @app.post("/v1/chat/completions")
