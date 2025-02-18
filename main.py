@@ -12,7 +12,7 @@ async def stream_generator(model,contents):
     response_text.append("[DONE]")
     for each in response_text:
         yield str(each) + '\n\n'
-        await asyncio.sleep(0.2)
+        # await asyncio.sleep(0.2)
 
 
 @app.post("/v1/chat/completions")
@@ -21,7 +21,6 @@ async def read_root(request: Request):
     contents = "服务器繁忙，请稍后再试。"
     is_stream = data['stream']
     model = data['model']
-    time.sleep(2)
     headers = {'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'}
