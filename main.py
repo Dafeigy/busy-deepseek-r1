@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 import time
-import json
+import asyncio
 from fastapi.responses import StreamingResponse
 app = FastAPI()
 
@@ -12,7 +12,7 @@ async def stream_generator(model,contents):
     response_text.append("[DONE]")
     for each in response_text:
         yield str(each) + '\n\n'
-        time.sleep(0.2)
+        await asyncio.sleep(0.2)
 
 
 @app.post("/v1/chat/completions")
@@ -22,9 +22,15 @@ async def read_root(request: Request):
     is_stream = data['stream']
     model = data['model']
     time.sleep(2)
+    headers = {'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'}
+
     if is_stream:
         print("Streaming")
-        return StreamingResponse(stream_generator(model,contents))
+        return StreamingResponse(stream_generator(model,contents), 
+                                 media_type="text/event-stream",
+                                 headers=headers)
     else:
         return  {
         "id": f"{int(time.time())}",
