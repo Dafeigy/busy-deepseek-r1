@@ -10,7 +10,7 @@ payload = {
             "content": "中国大模型行业2025年将会迎来哪些机遇和挑战？"
         }
     ],
-    "stream": False,
+    "stream": True,
     "max_tokens": 512,
     "stop": ["null"],
     "temperature": 0.7,
