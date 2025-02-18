@@ -36,6 +36,8 @@ headers = {
     "Content-Type": "application/json"
 }
 
-response = requests.request("POST", url, json=payload, headers=headers)
+# response = requests.request("POST", url, json=payload, headers=headers, stream=True)
 
-print(response.text)
+with requests.post(url, stream=True, json=payload, headers=headers) as r:
+    for line in r.iter_lines():
+        print(line)

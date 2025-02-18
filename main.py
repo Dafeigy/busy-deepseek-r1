@@ -12,7 +12,7 @@ async def stream_generator(model,contents):
     response_text.append("[DONE]")
     for each in response_text:
         yield str(each) + '\n\n'
-        # await asyncio.sleep(0.2)
+        await asyncio.sleep(1)
 
 
 @app.post("/v1/chat/completions")
@@ -28,7 +28,7 @@ async def read_root(request: Request):
     if is_stream:
         print("Streaming")
         return StreamingResponse(stream_generator(model,contents), 
-                                 
+                                 media_type="text/event-stream",
                                  headers=headers)
     else:
         return  {
